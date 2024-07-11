@@ -1,0 +1,35 @@
+body {
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  margin-top: 50px;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  color: #fff !important;
+}
+
+.list-group-item {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.list-group-item:hover {
+  background-color: #f1f1f1;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.alert-success {
+  margin-top: 20px;
+}
+
+.input-group-append {
+  margin-left: 5px;
+}
