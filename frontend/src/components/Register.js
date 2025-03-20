@@ -16,6 +16,14 @@ function Register() {
       setError('Passwords do not match. Please try again.');
       return;
     }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+    if (/[^a-zA-Z0-9]/.test(username)) {
+      setError('The username cannot contain special characters.');
+      return;
+    }
     const userData = { username, password };
     console.log("Sending user data for registration:", userData); // Debugging line
     axios.post('http://localhost:5000/register', userData)
@@ -25,7 +33,11 @@ function Register() {
         }
       })
       .catch(error => {
-        setError('An error occurred. Please try again.');
+        if (error.response && error.response.status === 400 && error.response.data.message === 'Username already exists. Please choose a different username.') {
+          setError('This username already exists. Please try with a new username.');
+        } else {
+          setError('An error occurred. Please try again.');
+        }
         console.error('There was an error registering!', error);
       });
   };

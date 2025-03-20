@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import { Container, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSync, faKey, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSync, faKey, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 function Home() {
   const [site, setSite] = useState('');
@@ -74,6 +74,26 @@ function Home() {
     });
   };
 
+  const handleDelete = (id) => {
+    if (token) {
+      axios.delete(`http://localhost:5000/passwords/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then(response => {
+        if (response.data.message === 'Password deleted successfully') {
+          setMessage('Password deleted successfully.');
+          // Refresh password list after deletion
+          setPasswords(passwords.filter(password => password.id !== id));
+        }
+      })
+      .catch(error => {
+        console.error('There was an error deleting the password!', error);
+      });
+    }
+  };
+
   const handleLogout = () => {
     axios.post('http://localhost:5000/logout', {}, {
       headers: {
@@ -130,9 +150,19 @@ function Home() {
         {passwords.map(password => (
           <li key={password.id} className="list-group-item d-flex justify-content-between align-items-center">
             {password.site}
-            <Link to={`/view-password/${password.id}`} className="btn btn-secondary btn-sm">
-              <FontAwesomeIcon icon={faEye} /> View Password
-            </Link>
+            <div>
+              <Link to={`/view-password/${password.id}`} className="btn btn-secondary btn-sm">
+                <FontAwesomeIcon icon={faEye} /> View Password
+              </Link>
+              <Button 
+                color="danger" 
+                size="sm" 
+                className="ml-2" 
+                onClick={() => handleDelete(password.id)}
+              >
+                <FontAwesomeIcon icon={faTrash} /> Delete
+              </Button>
+            </div>
           </li>
         ))}
       </ul>

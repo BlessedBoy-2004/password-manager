@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faSync, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { Button, Form, FormGroup, Label, Input, Container, InputGroup, InputGroupText } from 'reactstrap';
+import { faPlus, faSync, faEye, faEyeSlash, faKey } from '@fortawesome/free-solid-svg-icons';
+import { Button, Form, FormGroup, Label, Input, Container, InputGroup, InputGroupText, InputGroupAddon } from 'reactstrap';
 
 function AddPassword() {
   const [site, setSite] = useState('');
@@ -13,6 +13,12 @@ function AddPassword() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (password.length < 8) {
+      setMessage('Password must be at least 8 characters long.');
+      return;
+    }
+
     const token = localStorage.getItem('token');
     axios.post('http://localhost:5000/passwords', { site, email, password }, {
       headers: {
@@ -64,20 +70,20 @@ function AddPassword() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <InputGroupText>
+            <InputGroupAddon addonType="append">
               <Button color="secondary" onClick={() => setShowPassword(!showPassword)}>
                 <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </Button>
-            </InputGroupText>
-            <InputGroupText>
-              <Button type="button" color="secondary" onClick={generatePassword}>
-                <FontAwesomeIcon icon={faSync} /> Generate
+            </InputGroupAddon>
+            <InputGroupAddon addonType="append">
+              <Button type="button" color="success" onClick={generatePassword}>
+                <FontAwesomeIcon icon={faKey} /> Generate Password
               </Button>
-            </InputGroupText>
+            </InputGroupAddon>
           </InputGroup>
         </FormGroup>
         <Button type="submit" color="primary">
-          <FontAwesomeIcon icon={faPlus} /> Add
+          <FontAwesomeIcon icon={faPlus} /> Add Password
         </Button>
       </Form>
       {message && <div className="alert alert-success mt-3">{message}</div>}
